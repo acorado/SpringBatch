@@ -43,8 +43,6 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
   @Value("${spring.url.elastic.psw}")
   public String pass;
 
-  @Value("${spring.url.validator.day}")
-  public int validacion;
 
   @Value("${spring.url.elastic}")
   public String url;
@@ -90,8 +88,7 @@ public void afterJob(JobExecution jobExecution) {
       
   
 
-  if(day==validacion)
-  {
+ 
 
   
 
@@ -167,11 +164,7 @@ public void afterJob(JobExecution jobExecution) {
     sch.reportCurrentTime(year,numbermonth,value,user,pass,url,nameindex);
 
 
-  }
-else{
-  LOGGER.info("Hoy no es el dia programado");
-  LOGGER.info("*********************************************************************************************************************************************************************");
-}
+
 } catch (Exception e) {
 LOGGER.warn(e);
 }
@@ -200,8 +193,6 @@ public int year=localDate.getYear();
 try {
   
 
-    if(day==validacion)
-    {
  
     System.out.println(jobExecution.getJobId());
 
@@ -265,12 +256,6 @@ System.out.println(numbermonth);
     int status=response.getStatusCodeValue();
   
  LOGGER.info("codigo: "+status+" Response: "+data);
-    }
-else
-  {
-    System.out.println("Hoy no se creo indice");
-    LOGGER.info("Hoy no es la fecha programada");
-  }
 
 } catch (Exception e) {
 LOGGER.warn(e);

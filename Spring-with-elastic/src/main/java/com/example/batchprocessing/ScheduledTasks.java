@@ -6,7 +6,7 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
+
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,9 +38,6 @@ public int year=localDate.getYear();
 
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-
-	// fixedRate = 1000*60*60*24
-//	@Scheduled(cron = "0 0/24 12 * * *")
 
 
 	public void reportCurrentTime(int y ,String m, int val,String user, String pass, String url, String nameindex) {
