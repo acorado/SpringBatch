@@ -61,18 +61,18 @@ public int year=localDate.getYear();
 		headers2.setContentType(MediaType.APPLICATION_JSON);
 		headers2.set("Authorization", "Basic " + base64Creds);
 		LOGGER.info("/"+name+"-"+year+"."+mes+".*");
-		//Object input = "{\"source\": {\"index\": \"dell.0"+retro+".*\"},\"dest\": {\"index\": \"dell.0"+month+"."+year+"\", \"op_type\": \"create\"}}";
 
-		//System.out.println(input);
-	//	HttpEntity<String> entity = new HttpEntity<String>(headers2);
+
+
+		HttpEntity<String> entity = new HttpEntity<String>(headers2);
 		// send request and parse resultcs
-		//ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.DELETE, entity, String.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.DELETE, entity, String.class);
 		
-	//String data =response.getBody();
+	String data =response.getBody();
 		
-		//JSONObject json = new JSONObject(data);
-	
-//System.out.println(json);
+		JSONObject json = new JSONObject(data);
+
+LOGGER.info(json);
 		
 LOGGER.info("*******************************************************Eliminando indices correspondientes al mes "+mes+"***********************************************************");
 LOGGER.info("Indices correspondientes al mes "+mes+" borrados");
