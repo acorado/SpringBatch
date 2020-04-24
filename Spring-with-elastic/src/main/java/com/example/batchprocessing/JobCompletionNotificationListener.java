@@ -17,6 +17,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jackson.JsonComponentModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -48,10 +49,19 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
   public String url;
 
 
-  @Value("${spring.name.index_new}")
-  public String nameindex;
+  //@Value("${spring.name.index_new}")
+  //public String nameindex;
+
+  @Value("${spring.array.index}")
+  public String [] elementToSearch;
 
 
+  @Value("${spring.array.index}")
+  List<String> values;
+
+
+  @Value("${spring.api.delete}")
+  public boolean delete;
 
 
 
@@ -78,6 +88,13 @@ public void afterJob(JobExecution jobExecution) {
 
   if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
     System.out.println("!!! JOB FINISHED! Time to verify the results");
+    System.out.println(values);
+
+  
+
+
+
+
 
     LOGGER.info("!!! JOB FINISHED! Time to verify the results");
     
@@ -85,14 +102,14 @@ public void afterJob(JobExecution jobExecution) {
   }
 
   try {
-      
-  
 
+    for (String value : elementToSearch) {
+
+      System.out.println(value);
+      
  
 
-  
-
-
+      
       int exchange=0;
       String numbermonth="";
       if(month==1)
@@ -136,15 +153,15 @@ public void afterJob(JobExecution jobExecution) {
     byte[] plainCredsBytes = plainCreds.getBytes();
     String base64Creds = Base64.getEncoder().encodeToString(plainCredsBytes);
     int retro=month-1;
-    String uri = url+"/"+nameindex+"-"+year+"."+numbermonth+".*/_search";
-    
+    String uri = url+"/"+value+"-"+year+"."+numbermonth+".*/_search";
+    System.out.println(uri);
     // set headers
     HttpHeaders headers2 = new HttpHeaders();
     headers2.setContentType(MediaType.APPLICATION_JSON);
     headers2.set("Authorization", "Basic " + base64Creds);
 
     HttpEntity<String> entity = new HttpEntity<String>(headers2);
-    
+
     // send request and parse result
     ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
     
@@ -153,18 +170,21 @@ public void afterJob(JobExecution jobExecution) {
     JSONObject json = new JSONObject(data);
     JSONObject j=json.getJSONObject("hits");
     JSONObject k=j.getJSONObject("total");
-    int value=k.getInt("value");
+    int valueh=k.getInt("value");
     //System.out.println(value);
     
   
-    LOGGER.info("HITS :"+value);
+    LOGGER.info("HITS :"+valueh);       
 
 
     ScheduledTasks sch= new ScheduledTasks();
-    sch.reportCurrentTime(year,numbermonth,value,user,pass,url,nameindex);
+    sch.reportCurrentTime(year,numbermonth,valueh,user,pass,url,value,delete);
 
 
 
+
+}
+    
 } catch (Exception e) {
 LOGGER.warn(e);
 }
@@ -193,8 +213,12 @@ public int year=localDate.getYear();
 try {
   
 
- 
-    System.out.println(jobExecution.getJobId());
+  for (String value : elementToSearch) {
+
+    System.out.println(value);
+    
+
+  
 
     LOGGER.info("****************************************INICIO***********************************");
     RestTemplate restTemplate = new RestTemplate();
@@ -232,15 +256,15 @@ System.out.println(numbermonth);
 
 
     System.out.println("el mes es:"+month);
-    LOGGER.info("****************************************El indice a crear: "+nameindex+"-"+year+"."+numbermonth+"***********************************");
-    LOGGER.info("****************************************Creando: "+nameindex+"-"+year+"."+numbermonth+"***********************************");
+    LOGGER.info("****************************************El indice a crear: "+value+"-"+year+"."+numbermonth+"***********************************");
+    LOGGER.info("****************************************Creando: "+value+"-"+year+"."+numbermonth+"***********************************");
 
     
     String plainCreds = user+":"+pass;
     byte[] plainCredsBytes = plainCreds.getBytes();
     String base64Creds = Base64.getEncoder().encodeToString(plainCredsBytes);
-    String uri = url+"/"+nameindex+"-"+year+"."+numbermonth;
-    
+    String uri = url+"/"+value+"-"+year+"."+numbermonth;
+
     // set headers
     HttpHeaders headers2 = new HttpHeaders();
     headers2.setContentType(MediaType.APPLICATION_JSON);
@@ -254,9 +278,11 @@ System.out.println(numbermonth);
     LOGGER.info(response);
     String data =response.getBody();
     int status=response.getStatusCodeValue();
-  
+ 
  LOGGER.info("codigo: "+status+" Response: "+data);
 
+
+}
 } catch (Exception e) {
 LOGGER.warn(e);
 }

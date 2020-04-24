@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import org.json.JSONObject;
 
-//@Component
+
 public class ScheduleDelete {
 	private static final Logger LOGGER = LogManager.getLogger(ScheduleDelete .class.getName());
 	Date date = new Date();
@@ -37,13 +37,16 @@ public int year=localDate.getYear();
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 
-	public void delleteAll(String name, int year, String mes,String user,String pass, String url) {
+	public void delleteAll(String name, int year, String mes,String user,String pass, String url,boolean param) {
 		System.out.println("Borrado time is now {}"+ dateFormat.format(new Date()));
 
 
 
 
 	try {
+
+		if(param==true)
+		{
 		
 	RestTemplate restTemplate = new RestTemplate();
 		System.out.println("Eliminar indices");
@@ -70,13 +73,18 @@ public int year=localDate.getYear();
 		
 	String data =response.getBody();
 		
-		JSONObject json = new JSONObject(data);
+	JSONObject json = new JSONObject(data);
 
 LOGGER.info(json);
+
 		
 LOGGER.info("*******************************************************Eliminando indices correspondientes al mes "+mes+"***********************************************************");
 LOGGER.info("Indices correspondientes al mes "+mes+" borrados");
+		}
 
+		else{
+			LOGGER.info("Parametro de Borrado deshabilitado");
+		}
 
 	} catch (Exception e) {
 		LOGGER.warn("el error es"+e);

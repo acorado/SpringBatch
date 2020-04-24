@@ -40,7 +40,7 @@ public int year=localDate.getYear();
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 
-	public void reportCurrentTime(int y ,String m, int val,String user, String pass, String url, String nameindex) {
+	public void reportCurrentTime(int y ,String m, int val,String user, String pass, String url, String nameindex, boolean param) {
 		LOGGER.info("The time is now {}"+ dateFormat.format(new Date()));
 
 	try {
@@ -87,7 +87,7 @@ int descuadre=val-created;
 		if(descuadre==0)
 		{
 ScheduleDelete sched= new ScheduleDelete();
-	sched.delleteAll(nameindex, y, m,user,pass,url);
+	sched.delleteAll(nameindex, y, m,user,pass,url,param);
 	LOGGER.info("Reindexado exitoso**********************");
 		}
 		
